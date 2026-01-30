@@ -66,8 +66,13 @@ class Notifier {
             this.registerChannel('telegram', telegram);
         }
 
-        // ✅ Telegram integration completed
-        // TODO: Future channels - Discord, Slack, Teams, etc.
+        // Load Discord channel
+        const DiscordChannel = require('../channels/discord/discord');
+        const discordConfig = this.config.getChannel('discord');
+        if (discordConfig && discordConfig.enabled) {
+            const discord = new DiscordChannel(discordConfig.config || {});
+            this.registerChannel('discord', discord);
+        }
 
         this.logger.info(`Initialized ${this.channels.size} channels`);
     }

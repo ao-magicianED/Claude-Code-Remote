@@ -10,7 +10,7 @@
   },
   "discord": {
     "type": "chat",
-    "enabled": false,
+    "enabled": true,
     "config": {
       "webhook": "",
       "username": "Claude-Code-Remote",

@@ -35,6 +35,7 @@ if (fs.existsSync(envPath)) {
 const TelegramChannel = require('./src/channels/telegram/telegram');
 const DesktopChannel = require('./src/channels/local/desktop');
 const EmailChannel = require('./src/channels/email/smtp');
+const DiscordChannel = require('./src/channels/discord/discord');
 
 async function sendHookNotification() {
     try {
@@ -83,13 +84,25 @@ async function sendHookNotification() {
                 fromName: process.env.EMAIL_FROM_NAME,
                 to: process.env.EMAIL_TO
             };
-            
+
             if (emailConfig.smtp.host && emailConfig.smtp.auth.user && emailConfig.to) {
                 const emailChannel = new EmailChannel(emailConfig);
                 channels.push({ name: 'Email', channel: emailChannel });
             }
         }
-        
+
+        // Configure Discord channel if enabled
+        if (process.env.DISCORD_ENABLED === 'true' && process.env.DISCORD_WEBHOOK) {
+            const discordConfig = {
+                webhook: process.env.DISCORD_WEBHOOK,
+                username: process.env.DISCORD_USERNAME || 'Claude-Code-Remote',
+                avatar: process.env.DISCORD_AVATAR || null
+            };
+
+            const discordChannel = new DiscordChannel(discordConfig);
+            channels.push({ name: 'Discord', channel: discordChannel });
+        }
+
         // Get current working directory and tmux session
         const currentDir = process.cwd();
         const projectName = path.basename(currentDir);
